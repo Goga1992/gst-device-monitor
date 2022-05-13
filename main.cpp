@@ -303,9 +303,6 @@ main (int argc, char **argv)
     {G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, NULL},
     {NULL}
   };
-  GTimer *timer;
-  DevMonApp app;
-  GstBus *bus;
 
   setlocale (LC_ALL, "");
 
@@ -344,11 +341,12 @@ main (int argc, char **argv)
   //  return 0;
   //}
 
+  DevMonApp app;
   app.loop = g_main_loop_new (NULL, FALSE);
   app.monitor = gst_device_monitor_new ();
   gst_device_monitor_set_show_all_devices (app.monitor, include_hidden);
 
-  bus = gst_device_monitor_get_bus (app.monitor);
+  auto bus = gst_device_monitor_get_bus (app.monitor);
   app.bus_watch_id = gst_bus_add_watch (bus, bus_msg_handler, &app);
   gst_object_unref (bus);
 
@@ -374,7 +372,7 @@ main (int argc, char **argv)
 
   g_print ("Probing devices...\n\n");
 
-  timer = g_timer_new ();
+  auto timer = g_timer_new ();
 
   if (!gst_device_monitor_start (app.monitor)) {
     g_printerr ("Failed to start device monitor!\n");
